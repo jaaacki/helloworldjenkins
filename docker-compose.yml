@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  helloworld:
+    image: hello-world
+    container_name: helloworld
+    restart: always
+#    ports:
+#      - "XXXX:9000"
+#    volumes:
+#      - jenkins_home:/var/jenkins_home
+#      - /var/run/docker.sock:/var/run/docker.sock
+#    environment:
+#      - JENKINS_OPTS='--prefix=/jenkins'
+
+    networks:
+      - reverse-proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.backend=helloworld"
+      - "traefik.frontend.rule=Host:hello.sparkfn.com"
+      - "traefik.protocol=http"
+#      - "traefik.frontend.rule=Host:${DOMAINNAME}; PathPrefixStrip: /portainer"
+      - "traefik.port=80"
+      - "traefik.docker.network=reverse-proxy"
+
+networks:
+  reverse-proxy:
+    external:
+      name: reverse-proxy
+  default:
+    driver: bridge
